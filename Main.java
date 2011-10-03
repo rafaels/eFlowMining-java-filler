@@ -31,44 +31,40 @@ public class Main {
 	}
 	
 	public static void run() {
-		Assembly assembly = new Assembly();
-		assembly.setName("passar nos parametros");
-		assembly.setVersion("passar nos parametros");
-		assembly.setCreatedAt(new Date());
-		assembly.setLanguage("Java");
+		Assembly assembly = new Assembly("passar nos parametros", "passar nos parametros", new Date(), "Java");
 		
 		//itera nas classes
 		for (Iterator<SootClass> klassIt = Scene.v().getApplicationClasses().iterator(); klassIt.hasNext();) {
 			final SootClass klass = (SootClass) klassIt.next();
-			//if( klass.isPhantom() ) continue;
-			System.out.println(klass.getName());
+			
+			Type type = new Type(assembly, klass.getName(), "ver como pegar isso");
+			System.out.println(type.getName());
 			
 			List<SootMethod> methods = klass.getMethods();
 			//itera nos métodos
 			for (Iterator<SootMethod> methodsIt = methods.iterator(); methodsIt.hasNext(); ) {
-				SootMethod method = (SootMethod) methodsIt.next();
-				System.out.println(method.getName());
-				System.out.println(method.getExceptions()); //exceções lançadas pelo método
+				SootMethod sootMethod = (SootMethod) methodsIt.next();
 				
-				method.retrieveActiveBody();
+				Method method = new Method(type, sootMethod.getName(), getVisibility(sootMethod.getModifiers()));
+				System.out.println(method.getName());
+				System.out.println(method.getVisibility());
+				
+				sootMethod.retrieveActiveBody();
+				
 				ArrayList<Unit> listTry= new ArrayList<Unit>();
 				int qtdCatch = 0; // não existem dois Traps pra um mesmo catch
 				ArrayList<Unit> listFinally= new ArrayList<Unit>();
-				
 				int qtdThrow = 0;
-				UnitGraph graph = new TrapUnitGraph(method.getActiveBody());
-				for (Iterator<Unit> graphIt = graph.iterator(); graphIt.hasNext();) {
+				
+				UnitGraph graph = new TrapUnitGraph(sootMethod.getActiveBody());
+				for (Iterator<Unit> graphIt = graph.iterator(); graphIt.hasNext();) { //itera nos statements atrás de throws
 					Unit unit = graphIt.next();
 					if (unit instanceof JThrowStmt) {
 						qtdThrow++;
-						//JThrowStmt throwStmt = (JThrowStmt) unit;
-						//System.out.println(throwStmt);
-						//System.out.println(throwStmt.getOp().getType());
 					}
-					System.out.println(unit);
 				}
 				
-				for (Iterator<Trap> i = method.getActiveBody().getTraps().iterator(); i.hasNext();) {
+				for (Iterator<Trap> i = sootMethod.getActiveBody().getTraps().iterator(); i.hasNext();) {
 					Trap box = i.next();
 					if (box instanceof Trap) {
 						Trap trap = (Trap) box;
@@ -81,30 +77,46 @@ public class Main {
 							if (trap.getHandlerUnit() == trap.getEndUnit()) { //é um novo try, sem catchs
 								listTry.add(trap.getEndUnit());
 							}
-							System.out.println("Finally");
+							//System.out.println("Finally");
 						} else { //é um catch
 							if (!listTry.contains(trap.getEndUnit())) {
 								listTry.add(trap.getEndUnit());
 							}
 							qtdCatch++;
-							System.out.println(trap.getException());							
+							//System.out.println(trap.getException());							
 						}
 
-						System.out.println(box);
+						//System.out.println(box);
 					}
 				}
 				
-				System.out.printf("    Qtd Try: %d\n", listTry.size());
-				System.out.printf("  Qtd Catch: %d\n", qtdCatch);
-				System.out.printf("Qtd Finally: %d\n", listFinally.size());
-				System.out.printf("Qtd Throw: %d\n", qtdThrow);
+				method.setQtdTry(listTry.size());
+				method.setQtdCatch(qtdCatch);
+				method.setQtdFinally(listFinally.size());
+				method.setQtdThrow(qtdThrow);
+				System.out.printf("    Qtd Try: %d\n", method.getQtdTry());
+				System.out.printf("  Qtd Catch: %d\n", method.getQtdCatch());
+				System.out.printf("Qtd Finally: %d\n", method.getQtdFinally());
+				System.out.printf("  Qtd Throw: %d\n", method.getQtdThrow());
 
 				System.out.println();
 	        }
 		}
 	}
 	
-	public static Connection getConnection() {
+	public static String getVisibility(int modifiers) {
+		
+		if ((modifiers | soot.Modifier.PUBLIC) == modifiers) {
+			return "public";
+		} else if ((modifiers | soot.Modifier.PRIVATE) == modifiers) {
+			return "private";
+		} else if ((modifiers | soot.Modifier.PROTECTED) == modifiers) {
+			return "protected";
+		} else {
+			return "unknown";
+		} 
+	}
+	protected static Connection getConnection() {
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/flow_analysis?" + "user=root&password=456852");

@@ -5,12 +5,16 @@ import java.util.Date;
 
 public class Assembly {
 	private String name;
-	private String language;
 	private String version;
 	private Date createdAt;
+	private String language;
 	private ArrayList<Type> types;
 	
-	public Assembly() {
+	public Assembly(String name, String version, Date createdAt, String language) {
+		this.name = name;
+		this.version = version;
+		this.createdAt = createdAt;
+		this.language = language;
 		types = new ArrayList<Type>();
 	}
 

@@ -8,6 +8,13 @@ public class Method {
 	private int qtdCatch;
 	private int qtdThrow;
 	private int qtdFinally;
+	
+	public Method(Type type, String name, String visibility) {
+		this.type = type;
+		this.name = name;
+		this.visibility = visibility;
+	}
+	
 	public Type getType() {
 		return type;
 	}

@@ -31,11 +31,11 @@ public class Teste {
 			a = 13;
 		}
 		
-		synchronized (Teste.class) { //isso cria um trap a mais
+		//synchronized (Teste.class) { //isso cria um trap a mais (no caso um finally)
 			if (a == 3) {
 				throw new IllegalArgumentException(); 
 			}	
-		}
+		//}
 		
 		return 9;
 	}

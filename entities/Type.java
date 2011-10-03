@@ -2,16 +2,16 @@ package entities;
 
 import java.util.ArrayList;
 
-import soot.coffi.array_element_value;
-
 public class Type {
 	private Assembly assembly;
 	private String name;
-	private String fullName;
 	private String kind;
 	private ArrayList<Method> methods;
 	
-	public Type() {
+	public Type(Assembly assembly, String name, String kind) {
+		this.assembly = assembly;
+		this.name = name;
+		this.kind = kind;
 		methods = new ArrayList<Method>();
 	}
 
@@ -29,14 +29,6 @@ public class Type {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
 	}
 
 	public String getKind() {
