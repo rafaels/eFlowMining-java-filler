@@ -7,6 +7,8 @@ public class Teste {
 		try {
 			try {
 				a = 2;
+				a = 3;
+				throw new IllegalComponentStateException(); 
 			} catch (IllegalComponentStateException e) {
 				a = 4;
 			} catch (Exception e) {
