@@ -8,6 +8,7 @@ public class Assembly {
 	private String version;
 	private Date createdAt;
 	private String language;
+	
 	private ArrayList<Type> types;
 	
 	public Assembly(String name, String version, Date createdAt, String language) {

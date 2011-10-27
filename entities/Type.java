@@ -1,18 +1,22 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Type {
 	private Assembly assembly;
 	private String name;
 	private String kind;
+	
 	private ArrayList<Method> methods;
+	private static final ArrayList<Type> list = new ArrayList<Type>();
 	
 	public Type(Assembly assembly, String name, String kind) {
 		this.assembly = assembly;
 		this.name = name;
 		this.kind = kind;
 		methods = new ArrayList<Method>();
+		list.add(this);
 	}
 
 	public Assembly getAssembly() {
@@ -39,11 +43,31 @@ public class Type {
 		this.kind = kind;
 	}
 
-	public ArrayList<Method> getMethods() {
-		return methods;
+	public Iterator<Method> getMethodsIterator() {
+		return methods.iterator();
 	}
 
-	public void setMethods(ArrayList<Method> methods) {
-		this.methods = methods;
+	public void addMethod(Method method) {
+		this.methods.add(method);
+	}
+	
+	public static void print() {
+		for (Iterator<Type> iteratorType = list.iterator(); iteratorType.hasNext();) {
+			Type type = iteratorType.next();
+			
+			System.out.println(type.getName());
+			
+			for (Iterator<Method> iteratorMethod = type.getMethodsIterator(); iteratorMethod.hasNext();) {
+				Method method = iteratorMethod.next();
+                System.out.println(method.getName());
+                System.out.println(method.getVisibility());
+				System.out.printf("    Qtd Try: %d\n", method.getQtdTry());
+				System.out.printf("  Qtd Catch: %d\n", method.getQtdCatch());
+				System.out.printf("Qtd Finally: %d\n", method.getQtdFinally());
+				System.out.printf("  Qtd Throw: %d\n", method.getQtdThrow());	
+			}
+			
+			System.out.println();
+		}
 	}
 }

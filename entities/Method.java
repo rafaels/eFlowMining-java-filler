@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.ArrayList;
+
 public class Method {
 	private Type type;
 	private String name;
@@ -8,6 +10,8 @@ public class Method {
 	private int qtdCatch;
 	private int qtdThrow;
 	private int qtdFinally;
+
+	private ArrayList<MethodException> methodExceptions;
 	
 	public Method(Type type, String name, String visibility) {
 		this.type = type;
