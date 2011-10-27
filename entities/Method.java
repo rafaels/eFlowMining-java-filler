@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Method {
 	private Type type;
@@ -11,12 +12,18 @@ public class Method {
 	private int qtdThrow;
 	private int qtdFinally;
 
-	private ArrayList<MethodException> methodExceptions;
+	private ArrayList<Try> theTries = new ArrayList<Try>();
+	private ArrayList<Catch> theCatches = new ArrayList<Catch>();
+	private ArrayList<Throw> theThrows = new ArrayList<Throw>();
 	
 	public Method(Type type, String name, String visibility) {
 		this.type = type;
 		this.name = name;
 		this.visibility = visibility;
+		qtdTry = 0;
+		qtdCatch = 0;
+		qtdThrow = 0;
+		qtdFinally = 0;
 	}
 	
 	public Type getType() {
@@ -40,25 +47,44 @@ public class Method {
 	public int getQtdTry() {
 		return qtdTry;
 	}
-	public void setQtdTry(int qtdTry) {
-		this.qtdTry = qtdTry;
-	}
 	public int getQtdCatch() {
 		return qtdCatch;
 	}
-	public void setQtdCatch(int qtdCatch) {
-		this.qtdCatch = qtdCatch;
-	}
 	public int getQtdThrow() {
 		return qtdThrow;
-	}
-	public void setQtdThrow(int qtdThrow) {
-		this.qtdThrow = qtdThrow;
 	}
 	public int getQtdFinally() {
 		return qtdFinally;
 	}
 	public void setQtdFinally(int qtdFinally) {
 		this.qtdFinally = qtdFinally;
+	}
+	
+	public void addTry(Try aTry) {
+		qtdTry++;
+		theTries.add(aTry);
+	}
+	
+	public void addCatch(Catch aCatch) {
+		qtdCatch++;
+		theCatches.add(aCatch);
+	}
+	
+	public void addThrow(Throw aThrow) {
+		qtdThrow++;
+		theThrows.add(aThrow);
+	}
+	
+	public void print() {
+		System.out.println(this.getName());
+        System.out.println(this.getVisibility());
+		System.out.printf("    Qtd Try: %d\n", this.getQtdTry());
+		System.out.printf("  Qtd Catch: %d\n", this.getQtdCatch());
+		System.out.printf("Qtd Finally: %d\n", this.getQtdFinally());
+		System.out.printf("  Qtd Throw: %d\n", this.getQtdThrow());
+		
+		System.out.println(theTries);
+		System.out.println(theCatches);
+		System.out.println(theThrows);
 	}
 }

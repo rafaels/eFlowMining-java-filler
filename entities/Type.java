@@ -59,12 +59,8 @@ public class Type {
 			
 			for (Iterator<Method> iteratorMethod = type.getMethodsIterator(); iteratorMethod.hasNext();) {
 				Method method = iteratorMethod.next();
-                System.out.println(method.getName());
-                System.out.println(method.getVisibility());
-				System.out.printf("    Qtd Try: %d\n", method.getQtdTry());
-				System.out.printf("  Qtd Catch: %d\n", method.getQtdCatch());
-				System.out.printf("Qtd Finally: %d\n", method.getQtdFinally());
-				System.out.printf("  Qtd Throw: %d\n", method.getQtdThrow());	
+				
+                method.print();
 			}
 			
 			System.out.println();

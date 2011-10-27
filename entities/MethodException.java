@@ -1,11 +1,11 @@
 package entities;
 
 public abstract class MethodException {
-	private Method method;
-	private Exception exception;
-	private String kind;
-	private int startOffSet;
-	private int endOffSet;
+	protected Method method;
+	protected Exception exception;
+	protected String kind;
+	protected int startOffSet;
+	protected int endOffSet;
 
 	protected MethodException(Method method, String exception, String kind, int startOffSet, int endOffSet) {
 		this.method = method;

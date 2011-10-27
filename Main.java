@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import soot.PatchingChain;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -28,6 +29,7 @@ public class Main {
 
 		Scene.v().loadNecessaryClasses();
 		run();
+		Type.print();
 	}
 	
 	public static void run() {
@@ -38,7 +40,6 @@ public class Main {
 			final SootClass klass = (SootClass) klassIt.next();
 			
 			Type type = new Type(assembly, klass.getName(), "ver como pegar isso");
-			System.out.println(type.getName());
 			
 			List<SootMethod> methods = klass.getMethods();
 			//itera nos métodos
@@ -46,60 +47,50 @@ public class Main {
 				SootMethod sootMethod = (SootMethod) methodsIt.next();
 				
 				Method method = new Method(type, sootMethod.getName(), getVisibility(sootMethod.getModifiers()));
-				System.out.println(method.getName());
-				System.out.println(method.getVisibility());
-				
+				type.addMethod(method);
 				sootMethod.retrieveActiveBody();
 				
 				ArrayList<Unit> listTry= new ArrayList<Unit>();
 				int qtdCatch = 0; // não existem dois Traps pra um mesmo catch
 				ArrayList<Unit> listFinally= new ArrayList<Unit>();
-				int qtdThrow = 0;
+				ArrayList<Unit> units = new ArrayList<Unit>();
 				
 				UnitGraph graph = new TrapUnitGraph(sootMethod.getActiveBody());
 				for (Iterator<Unit> graphIt = graph.iterator(); graphIt.hasNext();) { //itera nos statements atrás de throws
 					Unit unit = graphIt.next();
+					units.add(unit);
 					if (unit instanceof JThrowStmt) {
-						qtdThrow++;
-					}
-				}
-				
-				for (Iterator<Trap> i = sootMethod.getActiveBody().getTraps().iterator(); i.hasNext();) {
-					Trap box = i.next();
-					if (box instanceof Trap) {
-						Trap trap = (Trap) box;
+						JThrowStmt throwUnit = (JThrowStmt) unit;
+						String throwType = throwUnit.getOp().getType().toString();
 						
-						if (trap.getException().getName().equals("java.lang.Throwable")) { //é um finally
-							if (!listFinally.contains(trap.getHandlerUnit())) {
-								listFinally.add(trap.getHandlerUnit());
-								qtdThrow--;
-							}
-							if (trap.getHandlerUnit() == trap.getEndUnit()) { //é um novo try, sem catchs
-								listTry.add(trap.getEndUnit());
-							}
-							//System.out.println("Finally");
-						} else { //é um catch
-							if (!listTry.contains(trap.getEndUnit())) {
-								listTry.add(trap.getEndUnit());
-							}
-							qtdCatch++;
-							//System.out.println(trap.getException());							
+						if (!throwType.equals("java.lang.Throwable")){ //não é um throw genérico usado pelo compilador
+							new Throw(method, throwType, units.indexOf(unit));
 						}
+					}
+				}
 
-						//System.out.println(box);
+				for (Iterator<Trap> i = sootMethod.getActiveBody().getTraps().iterator(); i.hasNext();) {
+					Trap trap = i.next();
+
+					if (trap.getException().getName().equals("java.lang.Throwable")) { //é um finally
+						if (!listFinally.contains(trap.getHandlerUnit())) {
+							listFinally.add(trap.getHandlerUnit());
+						}
+						if (trap.getHandlerUnit() == trap.getEndUnit()) { //é um novo try, sem catchs
+							listTry.add(trap.getEndUnit());
+							new Try(method, units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit())); //obs: início e fim do try é errado
+						}
+					} else { //é um catch
+						if (!listTry.contains(trap.getEndUnit())) { //é um novo try de um grupo de catchs
+							listTry.add(trap.getEndUnit());
+							new Try(method, units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
+						}
+						qtdCatch++;
+						new Catch(method, trap.getException().getName(), units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
 					}
 				}
 				
-				method.setQtdTry(listTry.size());
-				method.setQtdCatch(qtdCatch);
 				method.setQtdFinally(listFinally.size());
-				method.setQtdThrow(qtdThrow);
-				System.out.printf("    Qtd Try: %d\n", method.getQtdTry());
-				System.out.printf("  Qtd Catch: %d\n", method.getQtdCatch());
-				System.out.printf("Qtd Finally: %d\n", method.getQtdFinally());
-				System.out.printf("  Qtd Throw: %d\n", method.getQtdThrow());
-
-				System.out.println();
 	        }
 		}
 	}
