@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import soot.PatchingChain;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -23,10 +22,16 @@ import entities.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		List<String> process_dir = new LinkedList<String>();
-		process_dir.add("bin/");
-		Options.v().set_process_dir(process_dir);
-
+		List<String> process_dirs = new LinkedList<String>();
+		
+		String sep = System.getProperty("file.separator");
+		String process_dir = System.getProperty("user.dir") + sep + "src" + sep + "teste-bin";
+		process_dirs.add(process_dir);
+		
+		Options.v().set_process_dir(process_dirs);
+		Options.v().set_soot_classpath(process_dir);
+		Options.v().set_prepend_classpath(true);
+		
 		Scene.v().loadNecessaryClasses();
 		run();
 		Type.print();
@@ -51,7 +56,6 @@ public class Main {
 				sootMethod.retrieveActiveBody();
 				
 				ArrayList<Unit> listTry= new ArrayList<Unit>();
-				int qtdCatch = 0; // não existem dois Traps pra um mesmo catch
 				ArrayList<Unit> listFinally= new ArrayList<Unit>();
 				ArrayList<Unit> units = new ArrayList<Unit>();
 				
@@ -85,7 +89,6 @@ public class Main {
 							listTry.add(trap.getEndUnit());
 							new Try(method, units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
 						}
-						qtdCatch++;
 						new Catch(method, trap.getException().getName(), units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
 					}
 				}
