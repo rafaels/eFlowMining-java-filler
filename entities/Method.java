@@ -1,7 +1,6 @@
 package entities;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Method {
 	private Type type;

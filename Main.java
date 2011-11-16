@@ -9,8 +9,13 @@ import java.util.List;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.Trap;
 import soot.Unit;
+import soot.jimple.AssignStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Stmt;
 import soot.jimple.internal.JThrowStmt;
 import soot.options.Options;
 import soot.toolkits.graph.TrapUnitGraph;
@@ -34,7 +39,8 @@ public class Main {
 		
 		Scene.v().loadNecessaryClasses();
 		run();
-		Type.print();
+//		Type.print();
+//		MethodCall.print();
 	}
 	
 	public static void run() {
@@ -69,6 +75,21 @@ public class Main {
 						
 						if (!throwType.equals("java.lang.Throwable")){ //não é um throw genérico usado pelo compilador
 							new Throw(method, throwType, units.indexOf(unit));
+						}
+					}
+					
+					//cria os MethodCall com targets ficticios
+					if (unit instanceof Stmt) {
+						Stmt stmt = (Stmt) unit;
+						
+						if (stmt.containsInvokeExpr()) {
+							InvokeExpr invokeExpr;
+							invokeExpr = stmt.getInvokeExpr();
+							SootMethodRef methodRef = invokeExpr.getMethodRef();
+
+							FakeMethod fakeTarget = new FakeMethod(methodRef.declaringClass().getName(), methodRef.name());
+
+							MethodCall.createWithFakeTarget(assembly, method, fakeTarget, units.indexOf(unit));
 						}
 					}
 				}
