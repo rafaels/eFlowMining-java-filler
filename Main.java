@@ -40,7 +40,8 @@ public class Main {
 		Scene.v().loadNecessaryClasses();
 		run();
 //		Type.print();
-//		MethodCall.print();
+		MethodCall.trackActualTargets();
+		MethodCall.print();
 	}
 	
 	public static void run() {

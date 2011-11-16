@@ -10,6 +10,7 @@ public class MethodCall {
 	private FakeMethod fakeMethodTarget;
 	private int offSet; //where in methodSource is called
 	private static final ArrayList<MethodCall> list = new ArrayList<MethodCall>();
+	private static final ArrayList<MethodCall> trackingActualTargetList = new ArrayList<MethodCall>();
 	
 	private MethodCall(Assembly assembly, Method methodSource, FakeMethod fakeMethodTarget, int offSet) {
 		this.assembly = assembly;
@@ -33,6 +34,13 @@ public class MethodCall {
 	public int getOffSet() {
 		return offSet;
 	}
+	
+	public void trackActualTarget() {
+		methodTarget = Type.search(fakeMethodTarget.getFakeType(), fakeMethodTarget.getFakeName());
+		if (methodTarget != null) {
+			trackingActualTargetList.add(this);
+		}
+	}
 
 	public static MethodCall createWithFakeTarget(Assembly assembly, Method methodSource, FakeMethod fakeMethodTarget, int offSet) {
 		MethodCall methodCall = new MethodCall(assembly, methodSource, fakeMethodTarget, offSet);
@@ -42,14 +50,21 @@ public class MethodCall {
 		return methodCall;
 	}
 	
-	public static void print() {
+	public static void trackActualTargets() {
 		for (Iterator<MethodCall> iteratorType = list.iterator(); iteratorType.hasNext();) {
+			MethodCall methodCall = iteratorType.next();
+			methodCall.trackActualTarget();
+		}
+	}
+	
+	public static void print() {
+		for (Iterator<MethodCall> iteratorType = trackingActualTargetList.iterator(); iteratorType.hasNext();) {
 			MethodCall methodCall = iteratorType.next();
 			
 			System.out.println("#############################################");
 			System.out.printf("%s.%s\n", methodCall.getMethodSource().getType().getName(), methodCall.getMethodSource().getName());
 			System.out.println("->");
-			System.out.printf("%s.%s\n", methodCall.getFakeMethodTarget().getFakeType(), methodCall.getFakeMethodTarget().getFakeName());
+			System.out.printf("%s.%s\n", methodCall.getMethodTarget().getType().getName(), methodCall.getMethodTarget().getName());
 			System.out.printf("on: %d", methodCall.getOffSet());
 			
 			

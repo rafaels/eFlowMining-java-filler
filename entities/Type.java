@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 public class Type {
@@ -8,15 +9,15 @@ public class Type {
 	private String name;
 	private String kind;
 	
-	private ArrayList<Method> methods;
-	private static final ArrayList<Type> list = new ArrayList<Type>();
+	private Hashtable<String, Method> methods;
+	private static final Hashtable<String, Type> list = new Hashtable<String, Type>();
 	
 	public Type(Assembly assembly, String name, String kind) {
 		this.assembly = assembly;
 		this.name = name;
 		this.kind = kind;
-		methods = new ArrayList<Method>();
-		list.add(this);
+		methods = new Hashtable<String, Method>();
+		list.put(name, this);
 	}
 
 	public Assembly getAssembly() {
@@ -44,15 +45,23 @@ public class Type {
 	}
 
 	public Iterator<Method> getMethodsIterator() {
-		return methods.iterator();
+		return methods.values().iterator();
 	}
 
 	public void addMethod(Method method) {
-		this.methods.add(method);
+		this.methods.put(method.getName(), method);
+	}
+	
+	public static Method search(String type, String method) {
+		if (list.containsKey(type)) {
+			return list.get(type).methods.get(method);
+		}
+		
+		return null;
 	}
 	
 	public static void print() {
-		for (Iterator<Type> iteratorType = list.iterator(); iteratorType.hasNext();) {
+		for (Iterator<Type> iteratorType = list.values().iterator(); iteratorType.hasNext();) {
 			Type type = iteratorType.next();
 			
 			System.out.println(type.getName());
