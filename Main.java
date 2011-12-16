@@ -1,3 +1,5 @@
+import java.beans.XMLEncoder;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -21,25 +23,33 @@ import soot.toolkits.graph.UnitGraph;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.thoughtworks.xstream.XStream;
+
 import entities.*;
+import entities.Exception;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws java.lang.Exception {
 		List<String> process_dirs = new LinkedList<String>();
-		
+
 		String sep = System.getProperty("file.separator");
 		String process_dir = System.getProperty("user.dir") + sep + "src" + sep + "teste-bin";
 		process_dirs.add(process_dir);
-		
+
 		Options.v().set_process_dir(process_dirs);
 		Options.v().set_soot_classpath(process_dir);
 		Options.v().set_prepend_classpath(true);
-		
+
 		Scene.v().loadNecessaryClasses();
-		run();
-//		Type.print();
-		MethodCall.trackActualTargets();
-		MethodCall.print();
+		run(); //processa o bytecode e cria as entidades
+
+		String xml = getXML();
+
+		// Escreve no arquivo output.xml
+		FileOutputStream fos = new FileOutputStream("output.xml");
+		fos.write(xml.getBytes());
+		fos.flush();
+		fos.close();
 	}
 	
 	public static void run() {
@@ -116,6 +126,8 @@ public class Main {
 				method.setQtdFinally(listFinally.size());
 	        }
 		}
+
+		MethodCall.trackActualTargets();
 	}
 	
 	public static String getVisibility(int modifiers) {
@@ -130,16 +142,21 @@ public class Main {
 			return "unknown";
 		} 
 	}
-	protected static Connection getConnection() {
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/flow_analysis?" + "user=root&password=456852");
-			System.out.println("It seems I got the connection... :" + conn);
-		} catch (SQLException ex) {
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
-		}
-		return conn;
+
+	public static String getXML() throws java.lang.Exception {
+	    XStream xstream = new XStream();
+	    xstream.autodetectAnnotations(true);
+	    xstream.setMode(XStream.ID_REFERENCES);
+
+	    xstream.alias("assembly", Assembly.class);
+	    xstream.alias("type", Type.class);
+	    xstream.alias("method", Method.class);
+	    xstream.alias("methodCall", MethodCall.class);
+	    xstream.alias("methodException", MethodException.class);
+	    xstream.alias("methodException", Try.class);
+	    xstream.alias("methodException", Throw.class);
+	    xstream.alias("methodException", Catch.class);
+	    xstream.alias("exception", Exception.class);
+	    return xstream.toXML(Assembly.getInstance());
 	}
 }

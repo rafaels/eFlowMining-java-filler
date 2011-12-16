@@ -1,30 +1,30 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;;
+
 public class Type {
-	private Assembly assembly;
 	private String name;
 	private String kind;
 	
-	private Hashtable<String, Method> methods;
+	private @XStreamOmitField Hashtable<String, Method> methodsHash;
+	private ArrayList<Method> methods;
+
 	private static final Hashtable<String, Type> list = new Hashtable<String, Type>();
-	
+
+	public Type() {}
+
 	public Type(Assembly assembly, String name, String kind) {
-		this.assembly = assembly;
 		this.name = name;
 		this.kind = kind;
-		methods = new Hashtable<String, Method>();
+		methodsHash = new Hashtable<String, Method>();
+		methods = new ArrayList<Method>();
 		list.put(name, this);
-	}
-
-	public Assembly getAssembly() {
-		return assembly;
-	}
-
-	public void setAssembly(Assembly assembly) {
-		this.assembly = assembly;
+		Assembly.getInstance().addType(this);
 	}
 
 	public String getName() {
@@ -44,16 +44,17 @@ public class Type {
 	}
 
 	public Iterator<Method> getMethodsIterator() {
-		return methods.values().iterator();
+		return methodsHash.values().iterator();
 	}
 
 	public void addMethod(Method method) {
-		this.methods.put(method.getName(), method);
+		this.methodsHash.put(method.getName(), method);
+		this.methods.add(method);
 	}
 	
 	public static Method search(String type, String method) {
 		if (list.containsKey(type)) {
-			return list.get(type).methods.get(method);
+			return list.get(type).methodsHash.get(method);
 		}
 		
 		return null;

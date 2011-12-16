@@ -3,17 +3,19 @@ package entities;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 public class MethodCall {
-	private Assembly assembly;
 	private Method methodSource; //exists into the source
 	private Method methodTarget; //which method is being called
-	private FakeMethod fakeMethodTarget;
 	private int offSet; //where in methodSource is called
+
+	private @XStreamOmitField FakeMethod fakeMethodTarget;
+
 	private static final ArrayList<MethodCall> list = new ArrayList<MethodCall>();
 	private static final ArrayList<MethodCall> trackingActualTargetList = new ArrayList<MethodCall>();
-	
+
 	private MethodCall(Assembly assembly, Method methodSource, FakeMethod fakeMethodTarget, int offSet) {
-		this.assembly = assembly;
 		this.methodSource = methodSource;
 		this.fakeMethodTarget = fakeMethodTarget;
 		this.offSet = offSet;
@@ -55,6 +57,8 @@ public class MethodCall {
 			MethodCall methodCall = iteratorType.next();
 			methodCall.trackActualTarget();
 		}
+
+		Assembly.getInstance().setMethodCalls(trackingActualTargetList);
 	}
 	
 	public static void print() {

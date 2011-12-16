@@ -9,7 +9,17 @@ public class Assembly {
 	private Date createdAt;
 	private String language;
 	
+	private ArrayList<Exception> exceptions;
 	private ArrayList<Type> types;
+	private ArrayList<MethodCall> methodCalls;
+
+	private static Assembly _instance;
+
+	public Assembly() {}
+
+	public static Assembly getInstance() {
+		return _instance;
+	}
 	
 	public Assembly(String name, String version, Date createdAt, String language) {
 		this.name = name;
@@ -17,6 +27,9 @@ public class Assembly {
 		this.createdAt = createdAt;
 		this.language = language;
 		types = new ArrayList<Type>();
+		exceptions = new ArrayList<Exception>();
+		methodCalls = new ArrayList<MethodCall>();
+		_instance = this;
 	}
 
 	public String getName() {
@@ -57,5 +70,17 @@ public class Assembly {
 
 	public void setTypes(ArrayList<Type> types) {
 		this.types = types;
+	}
+
+	public void addType(Type type) {
+		types.add(type);
+	}
+
+	public void addException(Exception exception) {
+		exceptions.add(exception);
+	}
+
+	public void setMethodCalls(ArrayList<MethodCall> methodCalls) {
+		this.methodCalls = methodCalls;
 	}
 }

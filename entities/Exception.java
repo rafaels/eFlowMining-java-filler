@@ -9,6 +9,7 @@ public class Exception {
 	
 	private Exception(String name) {
 		this.name = name;
+		Assembly.getInstance().addException(this);
 	}
 	
 	public static Exception getException(String name) {

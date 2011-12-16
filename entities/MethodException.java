@@ -1,7 +1,9 @@
 package entities;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 public abstract class MethodException {
-	protected Method method;
+	protected @XStreamOmitField Method method;
 	protected Exception exception;
 	protected String kind;
 	protected int startOffSet;
