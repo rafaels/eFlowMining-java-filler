@@ -25,14 +25,23 @@ import entities.Exception;
 
 public class Main {
 	public static void main(String[] args) throws java.lang.Exception {
+		if (args.length != 3) {
+			System.out.println("Usage: eflow <process-dir> <project-name> <project-version>");
+			System.exit(1);
+		}
+
+		String dir = args[0];
+		String projectName = args[1];
+		String projectVersion = args[2];
+
+		new Assembly(projectName, projectVersion, new Date(), "Java");
+
 		List<String> process_dirs = new LinkedList<String>();
 
-		String sep = System.getProperty("file.separator");
-		String process_dir = System.getProperty("user.dir") + sep + "src" + sep + "teste-bin";
-		process_dirs.add(process_dir);
+		process_dirs.add(dir);
 
 		Options.v().set_process_dir(process_dirs);
-		Options.v().set_soot_classpath(process_dir);
+		Options.v().set_soot_classpath(dir);
 		Options.v().set_prepend_classpath(true);
 
 		Scene.v().loadNecessaryClasses();
@@ -48,7 +57,7 @@ public class Main {
 	}
 	
 	public static void run() {
-		Assembly assembly = new Assembly("passar nos parametros", "passar nos parametros", new Date(), "Java");
+		Assembly assembly = Assembly.getInstance();
 		
 		//itera nas classes
 		for (Iterator<SootClass> klassIt = Scene.v().getApplicationClasses().iterator(); klassIt.hasNext();) {
