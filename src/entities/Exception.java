@@ -15,6 +15,10 @@ public class Exception {
 	public static Exception getException(String name) {
 		Exception exception;
 		
+		if (name == "Try") {
+			return null; //POG
+		}
+		
 		if (exceptions.containsKey(name)) {
 			exception = exceptions.get(name);
 		} else {
