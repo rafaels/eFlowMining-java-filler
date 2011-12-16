@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public abstract class MethodException {
 	protected @XStreamOmitField Method method;
 	protected Exception exception;
+	protected boolean isGeneric;
 	protected String kind;
 	protected int startOffSet;
 	protected int endOffSet;
@@ -15,5 +16,9 @@ public abstract class MethodException {
 		this.kind = kind;
 		this.startOffSet = startOffSet;
 		this.endOffSet = endOffSet;
+	}
+
+	public void setIsGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 }
