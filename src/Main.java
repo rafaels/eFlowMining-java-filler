@@ -1,7 +1,4 @@
-import java.beans.XMLEncoder;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -20,8 +17,6 @@ import soot.jimple.internal.JThrowStmt;
 import soot.options.Options;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.toolkits.graph.UnitGraph;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 import com.thoughtworks.xstream.XStream;
 
