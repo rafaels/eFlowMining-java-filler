@@ -52,7 +52,7 @@ public class Main {
 		String xml = getXML();
 
 		// Escreve no arquivo output.xml
-		FileOutputStream fos = new FileOutputStream("output.xml");
+		FileOutputStream fos = new FileOutputStream(projectName + "-" + projectVersion + ".xml");
 		fos.write(xml.getBytes());
 		fos.flush();
 		fos.close();
@@ -65,6 +65,9 @@ public class Main {
 		for (Iterator<SootClass> klassIt = Scene.v().getApplicationClasses().iterator(); klassIt.hasNext();) {
 			final SootClass klass = (SootClass) klassIt.next();
 
+			if (klass.isPhantom())
+				continue;
+
 			Type type = new Type(assembly, klass.getName(), getTypeKind(klass));
 
 			List<SootMethod> methods = klass.getMethods();
@@ -72,13 +75,19 @@ public class Main {
 			for (Iterator<SootMethod> methodsIt = methods.iterator(); methodsIt.hasNext(); ) {
 				SootMethod sootMethod = (SootMethod) methodsIt.next();
 
-				Method method = new Method(type, sootMethod.getName(), getVisibility(sootMethod.getModifiers()));
+				Method method = new Method(type, sootMethod.getSignature(), getVisibility(sootMethod.getModifiers()));
 				type.addMethod(method);
 
 				if (!sootMethod.isConcrete())
 					continue;
 
-				sootMethod.retrieveActiveBody();
+				try {
+					sootMethod.retrieveActiveBody();
+				} catch (java.lang.Exception e) {
+					System.out.println("Error retrieving active body on " + type.getName() + "#" + method.getName());
+					e.printStackTrace();
+					continue;
+				}
 
 				ArrayList<Unit> listTry= new ArrayList<Unit>();
 				ArrayList<Unit> listFinally= new ArrayList<Unit>();
