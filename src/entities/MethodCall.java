@@ -60,19 +60,4 @@ public class MethodCall {
 
 		Assembly.getInstance().setMethodCalls(trackingActualTargetList);
 	}
-	
-	public static void print() {
-		for (Iterator<MethodCall> iteratorType = trackingActualTargetList.iterator(); iteratorType.hasNext();) {
-			MethodCall methodCall = iteratorType.next();
-			
-			System.out.println("#############################################");
-			System.out.printf("%s.%s\n", methodCall.getMethodSource().getType().getName(), methodCall.getMethodSource().getName());
-			System.out.println("->");
-			System.out.printf("%s.%s\n", methodCall.getMethodTarget().getType().getName(), methodCall.getMethodTarget().getName());
-			System.out.printf("on: %d", methodCall.getOffSet());
-			
-			
-			System.out.println();
-		}
-	}
 }

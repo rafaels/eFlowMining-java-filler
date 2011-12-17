@@ -76,17 +76,4 @@ public class Method {
 		theThrows.add(aThrow);
 		methodExceptions.add(aThrow);
 	}
-	
-	public void print() {
-		System.out.println(this.getName());
-        System.out.println(this.getVisibility());
-		System.out.printf("    Qtd Try: %d\n", this.getQtdTry());
-		System.out.printf("  Qtd Catch: %d\n", this.getQtdCatch());
-		System.out.printf("Qtd Finally: %d\n", this.getQtdFinally());
-		System.out.printf("  Qtd Throw: %d\n", this.getQtdThrow());
-		
-		System.out.println(theTries);
-		System.out.println(theCatches);
-		System.out.println(theThrows);
-	}
 }

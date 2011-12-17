@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;;
 
 public class Type {
@@ -58,21 +57,5 @@ public class Type {
 		}
 		
 		return null;
-	}
-	
-	public static void print() {
-		for (Iterator<Type> iteratorType = list.values().iterator(); iteratorType.hasNext();) {
-			Type type = iteratorType.next();
-			
-			System.out.println(type.getName());
-			
-			for (Iterator<Method> iteratorMethod = type.getMethodsIterator(); iteratorMethod.hasNext();) {
-				Method method = iteratorMethod.next();
-				
-                method.print();
-			}
-			
-			System.out.println();
-		}
 	}
 }
