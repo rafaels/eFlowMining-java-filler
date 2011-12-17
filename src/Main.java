@@ -75,7 +75,7 @@ public class Main {
 			for (Iterator<SootMethod> methodsIt = methods.iterator(); methodsIt.hasNext(); ) {
 				SootMethod sootMethod = (SootMethod) methodsIt.next();
 
-				Method method = new Method(type, sootMethod.getSignature(), getVisibility(sootMethod.getModifiers()));
+				Method method = new Method(type, sootMethod.getName(), sootMethod.getSignature(), getVisibility(sootMethod.getModifiers()));
 				type.addMethod(method);
 
 				if (!sootMethod.isConcrete())
@@ -84,7 +84,7 @@ public class Main {
 				try {
 					sootMethod.retrieveActiveBody();
 				} catch (java.lang.Exception e) {
-					System.out.println("Error retrieving active body on " + type.getName() + "#" + method.getName());
+					System.out.println("Error retrieving active body on " + type.getName() + "#" + method.getFullName());
 					e.printStackTrace();
 					continue;
 				}

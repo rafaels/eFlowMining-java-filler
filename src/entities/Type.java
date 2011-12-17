@@ -48,7 +48,7 @@ public class Type {
 	}
 
 	public void addMethod(Method method) {
-		this.methodsHash.put(method.getName(), method);
+		this.methodsHash.put(method.getFullName(), method);
 		this.methods.add(method);
 	}
 	

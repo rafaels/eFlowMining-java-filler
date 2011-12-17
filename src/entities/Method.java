@@ -7,6 +7,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 public class Method {
 	private @XStreamOmitField Type type;
 	private String name;
+	private String fullName;
 	private String visibility;
 	private int qtdTry;
 	private int qtdCatch;
@@ -19,9 +20,10 @@ public class Method {
 
 	private ArrayList<MethodException> methodExceptions = new ArrayList<MethodException>();
 	
-	public Method(Type type, String name, String visibility) {
+	public Method(Type type, String name, String fullName, String visibility) {
 		this.type = type;
 		this.name = name;
+		this.fullName = fullName;
 		this.visibility = visibility;
 		qtdTry = 0;
 		qtdCatch = 0;
@@ -32,20 +34,14 @@ public class Method {
 	public Type getType() {
 		return type;
 	}
-	public void setType(Type type) {
-		this.type = type;
-	}
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public String getFullName() {
+		return fullName;
 	}
 	public String getVisibility() {
 		return visibility;
-	}
-	public void setVisibility(String visibility) {
-		this.visibility = visibility;
 	}
 	public int getQtdTry() {
 		return qtdTry;
