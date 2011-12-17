@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project sootExperiment with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/home/rafaels/workspace/eclipse/sootExperiment/eflow.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="Main"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ soot-2.4.0.jar xstream-1.4.2.jar kxml2-min-2.3.0.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="/home/rafaels/workspace/eclipse/sootExperiment/bin"/>
+            <zipfileset dir="/home/rafaels/workspace/eclipse/sootExperiment/lib" includes="soot-2.4.0.jar"/>
+            <zipfileset dir="/home/rafaels/workspace/eclipse/sootExperiment/lib/xstream-1.4.2/lib" includes="xstream-1.4.2.jar"/>
+            <zipfileset dir="/home/rafaels/workspace/eclipse/sootExperiment/lib/xstream-1.4.2/lib/xstream" includes="kxml2-min-2.3.0.jar"/>
+        </jar>
+    </target>
+</project>
