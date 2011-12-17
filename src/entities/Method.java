@@ -11,6 +11,8 @@ public class Method {
 	private String visibility;
 	private int qtdTry;
 	private int qtdCatch;
+	private int qtdCatchGeneric;
+	private int qtdCatchSpecialized;
 	private int qtdThrow;
 	private int qtdFinally;
 
@@ -27,6 +29,8 @@ public class Method {
 		this.visibility = visibility;
 		qtdTry = 0;
 		qtdCatch = 0;
+		qtdCatchGeneric = 0;
+		qtdCatchSpecialized = 0;
 		qtdThrow = 0;
 		qtdFinally = 0;
 	}
@@ -67,6 +71,13 @@ public class Method {
 	
 	public void addCatch(Catch aCatch) {
 		qtdCatch++;
+
+		if (aCatch.isGeneric) {
+			qtdCatchGeneric++;
+		} else {
+			qtdCatchSpecialized++;
+		}
+
 		theCatches.add(aCatch);
 		methodExceptions.add(aCatch);
 	}

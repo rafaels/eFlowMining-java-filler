@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;;
 
 public class Type {
 	private String name;
+	private String fullName;
 	private String kind;
 	
 	private @XStreamOmitField Hashtable<String, Method> methodsHash;
@@ -17,33 +18,21 @@ public class Type {
 
 	public Type() {}
 
-	public Type(Assembly assembly, String name, String kind) {
-		this.name = name;
+	public Type(Assembly assembly, String fullName, String kind) {
+		this.fullName = fullName;
+
+		String[] parts = fullName.split("\\.");
+		this.name = parts[parts.length -1];
+
 		this.kind = kind;
 		methodsHash = new Hashtable<String, Method>();
 		methods = new ArrayList<Method>();
-		list.put(name, this);
+		list.put(fullName, this);
 		Assembly.getInstance().addType(this);
 	}
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getKind() {
-		return kind;
-	}
-
-	public void setKind(String kind) {
-		this.kind = kind;
-	}
-
-	public Iterator<Method> getMethodsIterator() {
-		return methodsHash.values().iterator();
 	}
 
 	public void addMethod(Method method) {
