@@ -85,7 +85,7 @@ public class Main {
 					sootMethod.retrieveActiveBody();
 				} catch (java.lang.Exception e) {
 					System.out.println("Error retrieving active body on " + type.getName() + "#" + method.getFullName());
-					e.printStackTrace();
+					e.printStackTrace(System.out);
 					continue;
 				}
 
