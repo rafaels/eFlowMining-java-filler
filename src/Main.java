@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import soot.Modifier;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -64,7 +65,7 @@ public class Main {
 		for (Iterator<SootClass> klassIt = Scene.v().getApplicationClasses().iterator(); klassIt.hasNext();) {
 			final SootClass klass = (SootClass) klassIt.next();
 
-			Type type = new Type(assembly, klass.getName(), "ver como pegar isso");
+			Type type = new Type(assembly, klass.getName(), getTypeKind(klass));
 
 			List<SootMethod> methods = klass.getMethods();
 			//itera nos métodos
@@ -150,6 +151,27 @@ public class Main {
 		} else {
 			return "unknown";
 		} 
+	}
+
+	public static String getTypeKind(SootClass klass) {
+		String str = "";
+
+		if (klass.isAbstract())
+			str += "Abstract|";
+
+		if (!klass.isInterface())
+			str += "Class|";
+
+		if (klass.isInterface())
+			str += "Interface|";
+
+		if (Modifier.isStatic(klass.getModifiers()))
+			str += "Static|";
+
+		if (Modifier.isEnum(klass.getModifiers()))
+			str += "Enum|";
+
+		return str;
 	}
 
 	public static String getXML() throws java.lang.Exception {
