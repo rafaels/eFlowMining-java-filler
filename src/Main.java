@@ -40,6 +40,7 @@ public class Main {
 
 		process_dirs.add(dir);
 
+		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_process_dir(process_dirs);
 		Options.v().set_soot_classpath(dir);
 		Options.v().set_prepend_classpath(true);
@@ -62,22 +63,26 @@ public class Main {
 		//itera nas classes
 		for (Iterator<SootClass> klassIt = Scene.v().getApplicationClasses().iterator(); klassIt.hasNext();) {
 			final SootClass klass = (SootClass) klassIt.next();
-			
+
 			Type type = new Type(assembly, klass.getName(), "ver como pegar isso");
-			
+
 			List<SootMethod> methods = klass.getMethods();
 			//itera nos métodos
 			for (Iterator<SootMethod> methodsIt = methods.iterator(); methodsIt.hasNext(); ) {
 				SootMethod sootMethod = (SootMethod) methodsIt.next();
-				
+
 				Method method = new Method(type, sootMethod.getName(), getVisibility(sootMethod.getModifiers()));
 				type.addMethod(method);
+
+				if (!sootMethod.isConcrete())
+					continue;
+
 				sootMethod.retrieveActiveBody();
-				
+
 				ArrayList<Unit> listTry= new ArrayList<Unit>();
 				ArrayList<Unit> listFinally= new ArrayList<Unit>();
 				ArrayList<Unit> units = new ArrayList<Unit>();
-				
+
 				UnitGraph graph = new TrapUnitGraph(sootMethod.getActiveBody());
 				for (Iterator<Unit> graphIt = graph.iterator(); graphIt.hasNext();) { //itera nos statements atrás de throws
 					Unit unit = graphIt.next();
