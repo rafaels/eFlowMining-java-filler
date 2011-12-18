@@ -10,9 +10,9 @@ public abstract class MethodException {
 	protected int startOffSet;
 	protected int endOffSet;
 
-	protected MethodException(Method method, String exception, String kind, int startOffSet, int endOffSet) {
+	protected MethodException(Method method, String exception, String exceptionBaseName, String kind, int startOffSet, int endOffSet) {
 		this.method = method;
-		this.exception = Exception.getException(exception);
+		this.exception = Exception.getException(exception, exceptionBaseName);
 		this.kind = kind;
 		this.startOffSet = startOffSet;
 		this.endOffSet = endOffSet;

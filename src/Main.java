@@ -101,8 +101,9 @@ public class Main {
 						JThrowStmt throwUnit = (JThrowStmt) unit;
 						String throwType = throwUnit.getOp().getType().toString();
 						
+						SootClass exception = Scene.v().getSootClass(throwType);
 						if (!throwType.equals("java.lang.Throwable")){ //não é um throw genérico usado pelo compilador
-							new Throw(method, throwType, units.indexOf(unit));
+							new Throw(method, throwType, exception.getSuperclass().getName(), units.indexOf(unit));
 						}
 					}
 					
@@ -138,7 +139,8 @@ public class Main {
 							listTry.add(trap.getEndUnit());
 							new Try(method, units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
 						}
-						new Catch(method, trap.getException().getName(), units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
+						SootClass exception = trap.getException();
+						new Catch(method, exception.getName(), exception.getSuperclass().getName(), units.indexOf(trap.getBeginUnit()), units.indexOf(trap.getEndUnit()));  //obs: início e fim do try é errado
 					}
 				}
 				

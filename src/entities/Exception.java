@@ -4,32 +4,35 @@ import java.util.HashMap;
 
 public class Exception {
 	private String name;
-	
+	private String basename;
+
 	private static HashMap<String, Exception> exceptions = new HashMap<String, Exception>();
-	
-	private Exception(String name) {
+
+	public Exception() {
+		name = "";
+		basename = "";
+	}
+
+	private Exception(String name, String basename) {
 		this.name = name;
+		this.basename = basename;
 		Assembly.getInstance().addException(this);
 	}
-	
-	public static Exception getException(String name) {
+
+	public static Exception getException(String name, String basename) {
 		Exception exception;
-		
+
 		if (name == "Try") {
-			return null; //POG
+			return new Exception(); //POG
 		}
-		
+
 		if (exceptions.containsKey(name)) {
 			exception = exceptions.get(name);
 		} else {
-			exception = new Exception(name);
+			exception = new Exception(name, basename);
 			exceptions.put(name, exception);
 		}
-		
+
 		return exception;
-	}
-	
-	public String toString() {
-		return name;
 	}
 }
