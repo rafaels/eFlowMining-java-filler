@@ -9,6 +9,7 @@ public class MethodCall {
 	private Method methodSource; //exists into the source
 	private Method methodTarget; //which method is being called
 	private int offSet; //where in methodSource is called
+	private int order;
 
 	private @XStreamOmitField FakeMethod fakeMethodTarget;
 
@@ -19,6 +20,7 @@ public class MethodCall {
 		this.methodSource = methodSource;
 		this.fakeMethodTarget = fakeMethodTarget;
 		this.offSet = offSet;
+		methodSource.addMethodCall(this);
 	}
 	
 	public Method getMethodSource() {
@@ -36,7 +38,11 @@ public class MethodCall {
 	public int getOffSet() {
 		return offSet;
 	}
-	
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
 	public void trackActualTarget() {
 		methodTarget = Type.search(fakeMethodTarget.getFakeType(), fakeMethodTarget.getFakeName());
 		if (methodTarget != null) {

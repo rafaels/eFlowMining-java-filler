@@ -19,6 +19,7 @@ public class Method {
 	private @XStreamOmitField ArrayList<Try> theTries = new ArrayList<Try>();
 	private @XStreamOmitField ArrayList<Catch> theCatches = new ArrayList<Catch>();
 	private @XStreamOmitField ArrayList<Throw> theThrows = new ArrayList<Throw>();
+	private @XStreamOmitField ArrayList<MethodCall> calls = new ArrayList<MethodCall>();
 
 	private ArrayList<MethodException> methodExceptions = new ArrayList<MethodException>();
 	
@@ -86,5 +87,10 @@ public class Method {
 		qtdThrow++;
 		theThrows.add(aThrow);
 		methodExceptions.add(aThrow);
+	}
+
+	public void addMethodCall(MethodCall methodCall) {
+		calls.add(methodCall);
+		methodCall.setOrder(calls.size());
 	}
 }
