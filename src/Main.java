@@ -115,7 +115,7 @@ public class Main {
 							invokeExpr = stmt.getInvokeExpr();
 							SootMethodRef methodRef = invokeExpr.getMethodRef();
 
-							FakeMethod fakeTarget = new FakeMethod(methodRef.declaringClass().getName(), methodRef.name());
+							FakeMethod fakeTarget = new FakeMethod(methodRef.declaringClass().getName(), methodRef.getSignature());
 
 							MethodCall.createWithFakeTarget(assembly, method, fakeTarget, units.indexOf(unit));
 						}
