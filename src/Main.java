@@ -149,8 +149,9 @@ public class Main {
 		}
 
 		MethodCall.trackActualTargets();
+		printStatistics();
 	}
-	
+
 	public static String getVisibility(int modifiers) {
 		
 		if ((modifiers | soot.Modifier.PUBLIC) == modifiers) {
@@ -200,5 +201,15 @@ public class Main {
 	    xstream.alias("methodException", Catch.class);
 	    xstream.alias("exception", Exception.class);
 	    return xstream.toXML(Assembly.getInstance());
+	}
+	
+	public static void printStatistics() {
+		Assembly assembly = Assembly.getInstance();
+		System.out.println("Try:     " + assembly.getQtdTry());
+		System.out.println("Catch:   " + assembly.getQtdCatch());
+		System.out.println("       Generic:     " + assembly.getQtdCatchGeneric());
+		System.out.println("       Specialized: " + assembly.getQtdCatchSpecialized());
+		System.out.println("Throw:   " + assembly.getQtdThrow());
+		System.out.println("Finally: " + assembly.getQtdFinally());
 	}
 }

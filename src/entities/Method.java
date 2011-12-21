@@ -54,6 +54,13 @@ public class Method {
 	public int getQtdCatch() {
 		return qtdCatch;
 	}
+	public int getQtdCatchGeneric() {
+		return qtdCatchGeneric;
+	}
+
+	public int getQtdCatchSpecialized() {
+		return qtdCatchSpecialized;
+	}
 	public int getQtdThrow() {
 		return qtdThrow;
 	}

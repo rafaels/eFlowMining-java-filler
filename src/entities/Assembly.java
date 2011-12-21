@@ -83,4 +83,47 @@ public class Assembly {
 	public void setMethodCalls(ArrayList<MethodCall> methodCalls) {
 		this.methodCalls = methodCalls;
 	}
+	public int getQtdTry() {
+		int sum = 0;
+		for (Type type : types) {
+			sum += type.getQtdTry();
+		}
+		return sum;
+	}
+	public int getQtdCatch() {
+		int sum = 0;
+		for (Type type : types) {
+			sum += type.getQtdCatch();
+		}
+		return sum;
+	}
+	public int getQtdCatchGeneric() {
+		int sum = 0;
+		for (Type type : types) {
+			sum += type.getQtdCatchGeneric();
+		}
+		return sum;
+	}
+
+	public int getQtdCatchSpecialized() {
+		int sum = 0;
+		for (Type type : types) {
+			sum += type.getQtdCatchSpecialized();
+		}
+		return sum;
+	}
+	public int getQtdThrow() {
+		int sum = 0;
+		for (Type type : types) {
+			sum += type.getQtdThrow();
+		}
+		return sum;
+	}
+	public int getQtdFinally() {
+		int sum = 0;
+		for (Type type : types) {
+			sum += type.getQtdFinally();
+		}
+		return sum;
+	}
 }

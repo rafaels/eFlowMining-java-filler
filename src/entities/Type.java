@@ -47,4 +47,48 @@ public class Type {
 		
 		return null;
 	}
+
+	public int getQtdTry() {
+		int sum = 0;
+		for (Method method : methods) {
+			sum += method.getQtdTry();
+		}
+		return sum;
+	}
+	public int getQtdCatch() {
+		int sum = 0;
+		for (Method method : methods) {
+			sum += method.getQtdCatch();
+		}
+		return sum;
+	}
+	public int getQtdCatchGeneric() {
+		int sum = 0;
+		for (Method method : methods) {
+			sum += method.getQtdCatchGeneric();
+		}
+		return sum;
+	}
+
+	public int getQtdCatchSpecialized() {
+		int sum = 0;
+		for (Method method : methods) {
+			sum += method.getQtdCatchSpecialized();
+		}
+		return sum;
+	}
+	public int getQtdThrow() {
+		int sum = 0;
+		for (Method method : methods) {
+			sum += method.getQtdThrow();
+		}
+		return sum;
+	}
+	public int getQtdFinally() {
+		int sum = 0;
+		for (Method method : methods) {
+			sum += method.getQtdFinally();
+		}
+		return sum;
+	}
 }
