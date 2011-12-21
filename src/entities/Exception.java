@@ -8,11 +8,6 @@ public class Exception {
 
 	private static HashMap<String, Exception> exceptions = new HashMap<String, Exception>();
 
-	public Exception() {
-		name = "";
-		basename = "";
-	}
-
 	private Exception(String name, String basename) {
 		this.name = name;
 		this.basename = basename;
@@ -21,10 +16,6 @@ public class Exception {
 
 	public static Exception getException(String name, String basename) {
 		Exception exception;
-
-		if (name == "Try") {
-			return new Exception(); //POG
-		}
 
 		if (exceptions.containsKey(name)) {
 			exception = exceptions.get(name);
