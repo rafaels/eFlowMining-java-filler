@@ -1,8 +1,8 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;;
 
@@ -11,7 +11,7 @@ public class Type {
 	private String fullName;
 	private String kind;
 	
-	private @XStreamOmitField Hashtable<String, Method> methodsHash;
+	private @XStreamOmitField HashMap<String, Method> methodsHash;
 	private ArrayList<Method> methods;
 
 	private static final Hashtable<String, Type> list = new Hashtable<String, Type>();
@@ -25,19 +25,28 @@ public class Type {
 		this.name = parts[parts.length -1];
 
 		this.kind = kind;
-		methodsHash = new Hashtable<String, Method>();
+		methodsHash = new HashMap<String, Method>();
 		methods = new ArrayList<Method>();
 		list.put(fullName, this);
-		Assembly.getInstance().addType(this);
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void addMethod(Method method) {
-		this.methodsHash.put(method.getFullName(), method);
-		this.methods.add(method);
+	public String getFullName() {
+		return fullName;
+	}
+
+	public Method getMethod(String name, String fullname, String visibility) {
+		if (this.methodsHash.containsKey(fullname)) {
+			return methodsHash.get(fullname);
+		} else {
+			Method method = new Method(this, name, fullname, visibility);
+			this.methodsHash.put(fullname, method);
+			this.methods.add(method);
+			return method;
+		}
 	}
 	
 	public static Method search(String type, String method) {

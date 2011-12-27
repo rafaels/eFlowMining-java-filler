@@ -2,6 +2,9 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 public class Assembly {
 	private String name;
@@ -10,8 +13,10 @@ public class Assembly {
 	private String language;
 	
 	private ArrayList<Exception> exceptions;
+	private ArrayList<Assembly> references;
 	private ArrayList<Type> types;
 	private ArrayList<MethodCall> methodCalls;
+	private @XStreamOmitField HashMap<String, Type> typeMap;
 
 	private static Assembly _instance;
 
@@ -20,16 +25,30 @@ public class Assembly {
 	public static Assembly getInstance() {
 		return _instance;
 	}
-	
+
+	public static void setInstance(Assembly instance) {
+		_instance = instance;
+	}
+
 	public Assembly(String name, String version, Date createdAt, String language) {
 		this.name = name;
 		this.version = version;
 		this.createdAt = createdAt;
 		this.language = language;
+		references = new ArrayList<Assembly>();
 		types = new ArrayList<Type>();
 		exceptions = new ArrayList<Exception>();
 		methodCalls = new ArrayList<MethodCall>();
-		_instance = this;
+		typeMap = new HashMap<String, Type>();
+	}
+
+	public void createDefaultRef() {
+		Assembly defaultRef = new Assembly("default", "default", createdAt, language);
+		references.add(defaultRef);
+	}
+
+	public Assembly getDefaultRef() {
+		return references.get(0);
 	}
 
 	public String getName() {
@@ -72,8 +91,15 @@ public class Assembly {
 		this.types = types;
 	}
 
-	public void addType(Type type) {
-		types.add(type);
+	public Type getType(String fullname, String kind) {
+		if (typeMap.containsKey(fullname)) {
+			return typeMap.get(fullname);
+		} else {
+			Type type = new Type(this, fullname, kind);
+			typeMap.put(fullname, type);
+			types.add(type);
+			return type;
+		}
 	}
 
 	public void addException(Exception exception) {

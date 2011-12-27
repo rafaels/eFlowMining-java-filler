@@ -35,7 +35,8 @@ public class Main {
 		String projectName = args[1];
 		String projectVersion = args[2];
 
-		new Assembly(projectName, projectVersion, new Date(), "Java");
+		Assembly.setInstance(new Assembly(projectName, projectVersion, new Date(), "Java"));
+		Assembly.getInstance().createDefaultRef();
 
 		List<String> process_dirs = new LinkedList<String>();
 
@@ -68,15 +69,14 @@ public class Main {
 			if (klass.isPhantom())
 				continue;
 
-			Type type = new Type(assembly, klass.getName(), getTypeKind(klass));
+			Type type = Assembly.getInstance().getType(klass.getName(), getTypeKind(klass));
 
 			List<SootMethod> methods = klass.getMethods();
 			//itera nos métodos
 			for (Iterator<SootMethod> methodsIt = methods.iterator(); methodsIt.hasNext(); ) {
 				SootMethod sootMethod = (SootMethod) methodsIt.next();
 
-				Method method = new Method(type, sootMethod.getName(), sootMethod.getSignature(), getVisibility(sootMethod.getModifiers()));
-				type.addMethod(method);
+				Method method = type.getMethod(sootMethod.getName(), sootMethod.getSignature(), getVisibility(sootMethod.getModifiers()));
 
 				if (!sootMethod.isConcrete())
 					continue;
@@ -116,6 +116,10 @@ public class Main {
 							invokeExpr = stmt.getInvokeExpr();
 							SootMethodRef methodRef = invokeExpr.getMethodRef();
 
+							if (isReferenceInvoke(invokeExpr)) {
+								createReferenceTypeAndMethod(invokeExpr);
+							}
+
 							FakeMethod fakeTarget = new FakeMethod(methodRef.declaringClass().getName(), methodRef.getSignature());
 
 							MethodCall.createWithFakeTarget(assembly, method, fakeTarget, units.indexOf(unit));
@@ -150,6 +154,27 @@ public class Main {
 
 		MethodCall.trackActualTargets();
 		printStatistics();
+	}
+
+	private static void createReferenceTypeAndMethod(InvokeExpr invokeExpr) {
+		Assembly assembly = Assembly.getInstance().getDefaultRef();
+		SootMethod sootMethod = invokeExpr.getMethod();
+
+		if (sootMethod.getExceptions().size() > 0) {
+			SootClass klass = invokeExpr.getMethodRef().declaringClass();
+
+			Type type = assembly.getType(klass.getName(), getTypeKind(klass));
+			Method method = type.getMethod(sootMethod.getName(), sootMethod.getSignature(), getVisibility(sootMethod.getModifiers()));
+
+			for (Iterator<SootClass> exceptions = sootMethod.getExceptions().iterator(); exceptions.hasNext();) {
+				SootClass exception = exceptions.next();
+				method.addThrow(exception.getName(), exception.getSuperclass().getName());
+			}
+		}
+	}
+
+	private static boolean isReferenceInvoke(InvokeExpr invokeExpr) {
+		return !invokeExpr.getMethodRef().declaringClass().isApplicationClass();
 	}
 
 	public static String getVisibility(int modifiers) {
@@ -205,11 +230,15 @@ public class Main {
 	
 	public static void printStatistics() {
 		Assembly assembly = Assembly.getInstance();
+		System.out.println("Type: " + assembly.getTypes().size());
 		System.out.println("Try:     " + assembly.getQtdTry());
 		System.out.println("Catch:   " + assembly.getQtdCatch());
 		System.out.println("       Generic:     " + assembly.getQtdCatchGeneric());
 		System.out.println("       Specialized: " + assembly.getQtdCatchSpecialized());
 		System.out.println("Throw:   " + assembly.getQtdThrow());
 		System.out.println("Finally: " + assembly.getQtdFinally());
+
+		System.out.println("RefType: " + assembly.getDefaultRef().getTypes().size());
+		System.out.println("RefThrow: " + assembly.getDefaultRef().getQtdThrow());
 	}
 }

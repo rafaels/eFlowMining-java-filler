@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
@@ -20,6 +21,7 @@ public class Method {
 	private @XStreamOmitField ArrayList<Catch> theCatches = new ArrayList<Catch>();
 	private @XStreamOmitField ArrayList<Throw> theThrows = new ArrayList<Throw>();
 	private @XStreamOmitField ArrayList<MethodCall> calls = new ArrayList<MethodCall>();
+	private @XStreamOmitField HashMap<String, Throw> throwMap = new HashMap<String, Throw>();
 
 	private ArrayList<MethodException> methodExceptions = new ArrayList<MethodException>();
 	
@@ -89,11 +91,20 @@ public class Method {
 		theCatches.add(aCatch);
 		methodExceptions.add(aCatch);
 	}
-	
+
+	//usado nas classes de aplicação (appThrow)
 	public void addThrow(Throw aThrow) {
 		qtdThrow++;
 		theThrows.add(aThrow);
 		methodExceptions.add(aThrow);
+	}
+
+	//usado nas referências (RefThrow)
+	public void addThrow(String exception, String exceptionBasename) {
+		if (!throwMap.containsKey(exception)) {
+			Throw aThrow = new Throw(this, exception, exceptionBasename, throwMap.size());
+			throwMap.put(exception, aThrow);
+		}
 	}
 
 	public void addMethodCall(MethodCall methodCall) {
