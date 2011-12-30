@@ -11,14 +11,16 @@ public class Assembly {
 	private String version;
 	private Date createdAt;
 	private String language;
+	private boolean analyzer;
 	
 	private ArrayList<Exception> exceptions;
-	private ArrayList<Assembly> references;
+	private @XStreamOmitField ArrayList<Assembly> references;
 	private ArrayList<Type> types;
 	private ArrayList<MethodCall> methodCalls;
 	private @XStreamOmitField HashMap<String, Type> typeMap;
 
 	private static Assembly _instance;
+	private static ArrayList<Assembly> assemblies = new ArrayList<Assembly>();
 
 	public Assembly() {}
 
@@ -30,7 +32,15 @@ public class Assembly {
 		_instance = instance;
 	}
 
-	public Assembly(String name, String version, Date createdAt, String language) {
+	public static ArrayList<Assembly> getAssemblyList() {
+		return assemblies;
+	}
+
+	public static void addAssembly(Assembly assembly) {
+		assemblies.add(assembly);
+	}
+
+	public Assembly(String name, String version, Date createdAt, String language, boolean analyzer) {
 		this.name = name;
 		this.version = version;
 		this.createdAt = createdAt;
@@ -40,11 +50,13 @@ public class Assembly {
 		exceptions = new ArrayList<Exception>();
 		methodCalls = new ArrayList<MethodCall>();
 		typeMap = new HashMap<String, Type>();
+		this.analyzer = analyzer;
 	}
 
 	public void createDefaultRef() {
-		Assembly defaultRef = new Assembly("default", "default", createdAt, language);
+		Assembly defaultRef = new Assembly("default", "default", createdAt, language, false);
 		references.add(defaultRef);
+		addAssembly(defaultRef);
 	}
 
 	public Assembly getDefaultRef() {

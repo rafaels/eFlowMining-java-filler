@@ -11,7 +11,7 @@ public class Exception {
 	private Exception(String name, String basename) {
 		this.name = name;
 		this.basename = basename;
-		Assembly.getInstance().addException(this);
+		Assembly.getInstance().getDefaultRef().addException(this);
 	}
 
 	public static Exception getException(String name, String basename) {

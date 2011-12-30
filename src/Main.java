@@ -35,7 +35,7 @@ public class Main {
 		String projectName = args[1];
 		String projectVersion = args[2];
 
-		Assembly.setInstance(new Assembly(projectName, projectVersion, new Date(), "Java"));
+		Assembly.setInstance(new Assembly(projectName, projectVersion, new Date(), "Java", true));
 		Assembly.getInstance().createDefaultRef();
 
 		List<String> process_dirs = new LinkedList<String>();
@@ -49,6 +49,7 @@ public class Main {
 
 		Scene.v().loadNecessaryClasses();
 		run(); //processa o bytecode e cria as entidades
+		Assembly.addAssembly(Assembly.getInstance());
 
 		String xml = getXML();
 
@@ -225,7 +226,7 @@ public class Main {
 	    xstream.alias("methodException", Throw.class);
 	    xstream.alias("methodException", Catch.class);
 	    xstream.alias("exception", Exception.class);
-	    return xstream.toXML(Assembly.getInstance());
+	    return xstream.toXML(Assembly.getAssemblyList());
 	}
 	
 	public static void printStatistics() {
